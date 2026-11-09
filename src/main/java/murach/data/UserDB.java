@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import murach.business.User;
 
 public class UserDB {
-    // Ưu tiên đọc từ biến môi trường DB_URL trên Render.
-    // Nếu không có, fallback về URL External Direct Connection của Render Postgres (có sslmode=require)
+    // Đọc từ biến môi trường DB_URL trên Render.
+    // Nếu không có, tự động fallback về URL External Direct Connection của Render Postgres
     private static final String URL = System.getenv("DB_URL") != null
             ? System.getenv("DB_URL")
             : "jdbc:postgresql://dpg-cub2rbagij4c73e031s0-a.singapore-postgres.render.com:5432/email_db_jb8p?sslmode=require";
@@ -19,7 +19,7 @@ public class UserDB {
 
     private static final String PASSWORD = System.getenv("DB_PASSWORD") != null
             ? System.getenv("DB_PASSWORD")
-            : "omgclqjztr"; // Điền đúng password CSDL Render của bạn nếu dùng fallback
+            : "omgclqjztr";
 
     public static int insert(User user) {
         String sql = "INSERT INTO users (email, first_name, last_name) VALUES (?, ?, ?)";
