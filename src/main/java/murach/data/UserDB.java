@@ -7,18 +7,19 @@ import java.sql.SQLException;
 import murach.business.User;
 
 public class UserDB {
-    // Đọc thông số từ Environment Variables trên Render, nếu không có sẽ tự dùng cấu hình local
+    // Ưu tiên đọc từ biến môi trường DB_URL trên Render.
+    // Nếu không có, fallback về URL External Direct Connection của Render Postgres (có sslmode=require)
     private static final String URL = System.getenv("DB_URL") != null
             ? System.getenv("DB_URL")
-            : "jdbc:postgresql://localhost:5432/email_db";
+            : "jdbc:postgresql://dpg-cub2rbagij4c73e031s0-a.singapore-postgres.render.com:5432/email_db_jb8p?sslmode=require";
 
     private static final String USER = System.getenv("DB_USER") != null
             ? System.getenv("DB_USER")
-            : "postgres";
+            : "email_user";
 
     private static final String PASSWORD = System.getenv("DB_PASSWORD") != null
             ? System.getenv("DB_PASSWORD")
-            : "omgclqjztr";
+            : "omgclqjztr"; // Điền đúng password CSDL Render của bạn nếu dùng fallback
 
     public static int insert(User user) {
         String sql = "INSERT INTO users (email, first_name, last_name) VALUES (?, ?, ?)";
@@ -26,7 +27,7 @@ public class UserDB {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            System.err.println("Không tìm thấy PostgreSQL Driver!");
+            System.err.println("Không tìm thấy PostgreSQL Driver: " + e.getMessage());
             e.printStackTrace();
             return 0;
         }
@@ -38,9 +39,16 @@ public class UserDB {
             ps.setString(2, user.getFirstName());
             ps.setString(3, user.getLastName());
 
-            return ps.executeUpdate();
+            int rowsAffected = ps.executeUpdate();
+
+            // Đảm bảo commit dữ liệu nếu auto-commit bị tắt
+            if (!conn.getAutoCommit()) {
+                conn.commit();
+            }
+
+            return rowsAffected;
         } catch (SQLException e) {
-            System.err.println("Lỗi khi thêm User vào CSDL: " + e.getMessage());
+            System.err.println("Lỗi kết nối hoặc ghi dữ liệu PostgreSQL: " + e.getMessage());
             e.printStackTrace();
             return 0;
         }
