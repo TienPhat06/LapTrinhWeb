@@ -6,10 +6,9 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 
 import murach.business.User;
-import murach.data.UserDB; // Đã bỏ dòng này
+import murach.data.UserDB;
 
-
-//@WebServlet("/emailList") MỚI COMMENT
+@WebServlet("/emailList")
 public class EmailListServlet extends HttpServlet {
 
     @Override
@@ -19,32 +18,28 @@ public class EmailListServlet extends HttpServlet {
 
         String url = "/index.html";
 
-        // get current action
         String action = request.getParameter("action");
         if (action == null) {
-            action = "join"; // default action
+            action = "join";
         }
 
-        // perform action and set URL to appropriate page
         if (action.equals("join")) {
-            url = "/index.html";    // the "join" page
+            url = "/index.html";
         }
         else if (action.equals("add")) {
-            // get parameters from the request
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
 
-            // store data in User object
             User user = new User(firstName, lastName, email);
-            UserDB.insert(user); // Tạm thời bỏ qua phần lưu DB
 
-            // set User object in request object and set URL
+            // Gọi insert lưu dữ liệu vào PostgreSQL trên Render
+            UserDB.insert(user);
+
             request.setAttribute("user", user);
-            url = "/thanks.jsp";    // the "thanks" page
+            url = "/thanks.jsp";
         }
 
-        // forward request and response objects to specified URL
         getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
