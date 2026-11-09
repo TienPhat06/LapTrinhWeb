@@ -17,7 +17,6 @@
     </properties>
 
     <dependencies>
-        <!-- Jakarta Servlet API 6.0 cho Tomcat 10+ -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -25,7 +24,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- PostgreSQL JDBC Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -34,10 +32,8 @@
     </dependencies>
 
     <build>
-        <!-- Tên file war đầu ra luôn là ROOT.war để Tomcat chạy làm trang chủ -->
         <finalName>ROOT</finalName>
         <plugins>
-            <!-- Compiler plugin tương thích Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -47,8 +43,6 @@
                     <target>21</target>
                 </configuration>
             </plugin>
-
-            <!-- WAR plugin đóng gói web application -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
