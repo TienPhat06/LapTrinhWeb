@@ -7,15 +7,22 @@ import java.sql.SQLException;
 import murach.business.User;
 
 public class UserDB {
-    // Kết nối đến database email_db vừa tạo trên PostgreSQL
-    private static final String URL = "jdbc:postgresql://localhost:5432/email_db";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "omgclqjztr"; // ⚠️ ĐỔI THÀNH MẬT KHẨU POSTGRESQL CỦA BẠN
+    // Đọc thông số từ Environment Variables trên Render, nếu không có sẽ tự dùng cấu hình local
+    private static final String URL = System.getenv("DB_URL") != null
+            ? System.getenv("DB_URL")
+            : "jdbc:postgresql://localhost:5432/email_db";
+
+    private static final String USER = System.getenv("DB_USER") != null
+            ? System.getenv("DB_USER")
+            : "postgres";
+
+    private static final String PASSWORD = System.getenv("DB_PASSWORD") != null
+            ? System.getenv("DB_PASSWORD")
+            : "omgclqjztr";
 
     public static int insert(User user) {
         String sql = "INSERT INTO users (email, first_name, last_name) VALUES (?, ?, ?)";
 
-        // Tải PostgreSQL Driver
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -24,7 +31,6 @@ public class UserDB {
             return 0;
         }
 
-        // Thực thi mở kết nối và chèn dữ liệu
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -32,7 +38,7 @@ public class UserDB {
             ps.setString(2, user.getFirstName());
             ps.setString(3, user.getLastName());
 
-            return ps.executeUpdate(); // Trả về số dòng được thêm (1 nếu thành công)
+            return ps.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Lỗi khi thêm User vào CSDL: " + e.getMessage());
             e.printStackTrace();
