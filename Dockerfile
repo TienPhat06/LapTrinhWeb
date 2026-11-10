@@ -1,3 +1,4 @@
+# Stage 1: Build ứng dụng Maven
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
@@ -6,17 +7,14 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
+# Stage 2: Chạy ứng dụng trên Tomcat 10
 FROM tomcat:10.1-jdk21-temurin
 
+# Xóa ứng dụng mặc định của Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-RUN mkdir -p /usr/local/tomcat/webapps/ROOT
-
-COPY --from=build /app/src/main/webapp/ /usr/local/tomcat/webapps/ROOT/
-
-COPY --from=build /app/target/classes/ /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/
-
-COPY --from=build /app/target/Practice1-1.0-SNAPSHOT/WEB-INF/lib/ /usr/local/tomcat/webapps/ROOT/WEB-INF/lib/
+# Copy đúng 1 file ROOT.war vào thư mục webapps để Tomcat làm trang gốc (/)
+COPY --from=build /app/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
