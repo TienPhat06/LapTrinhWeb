@@ -6,7 +6,14 @@
          version="6.0"
          metadata-complete="false">
 
-    <!-- Explicit Servlet Declaration for Tomcat 10+ -->
+    <!-- Khai báo Welcome Files đón chào khi truy cập URL gốc -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+    </welcome-file-list>
+
+    <!-- Khai báo Servlet cho Tomcat 10+ -->
     <servlet>
         <servlet-name>EmailListServlet</servlet-name>
         <servlet-class>murach.email.EmailListServlet</servlet-class>
@@ -20,10 +27,5 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
 
 </web-app>
