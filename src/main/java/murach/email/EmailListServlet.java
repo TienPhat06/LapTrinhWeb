@@ -6,7 +6,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 
 import murach.business.User;
-import murach.data.UserDB;
+//import murach.data.UserDB;
 
 @WebServlet("/emailList")
 public class EmailListServlet extends HttpServlet {
@@ -34,7 +34,7 @@ public class EmailListServlet extends HttpServlet {
             User user = new User(firstName, lastName, email);
 
             // Gọi insert lưu dữ liệu vào PostgreSQL trên Render
-            UserDB.insert(user);
+            //UserDB.insert(user);
 
             request.setAttribute("user", user);
             url = "/thanks.jsp";
